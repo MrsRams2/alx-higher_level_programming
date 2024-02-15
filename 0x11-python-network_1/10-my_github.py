@@ -1,23 +1,18 @@
 #!/usr/bin/python3
-"""Lists the 10 most recent commits on a given GitHub repository.
+"""Uses the GitHub API to display a GitHub ID based on given credentials.
 
-Usage: ./100-github_commits.py <repository name> <repository owner>
+Usage: ./10-my_github.py <GitHub username> <GitHub password>
+  - Uses Basic Authentication to access the ID.
+
 """
+
 
 import sys
 import requests
+from requests.auth import HTTPBasicAuth
 
 
 if __name__ == "__main__":
-    url = "https://api.github.com/repos/{}/{}/commits".format(
-        sys.argv[2], sys.argv[1])
-
-    response = requests.get(url)
-    commits = response.json()
-    try:
-        for i in range(10):
-            print("{}: {}".format(
-                commits[i].get("sha"),
-                commits[i].get("commit").get("author").get("name")))
-    except IndexError:
-        pass
+    auth = HTTPBasicAuth(sys.argv[1], sys.argv[2])
+    r = requests.get("https://api.github.com/user", auth=auth)
+    print(r.json().get("id"))
